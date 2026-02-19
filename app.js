@@ -94,6 +94,8 @@ function renderProducts(list) {
   list.forEach(p => {
     const div = document.createElement("div");
     div.className = "product";
+    div.setAttribute("data-id", p.id);
+
 
     div.innerHTML = `
       <h3>${p.name}</h3>
@@ -165,6 +167,8 @@ function renderCart() {
 
     const div = document.createElement("div");
     div.className = "cart-item";
+    div.setAttribute("data-id", p.id);
+
 
     div.innerHTML = `
       <strong>${p.name}</strong>
