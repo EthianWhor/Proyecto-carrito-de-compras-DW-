@@ -12,3 +12,12 @@ body {
 button {
   cursor: pointer;
 }
+.nav {
+  margin: 10px 0 16px;
+  display: flex;
+  gap: 10px;
+}
+
+.hidden {
+  display: none;
+}

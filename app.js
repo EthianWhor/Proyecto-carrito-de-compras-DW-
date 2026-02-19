@@ -11,7 +11,6 @@ const products = [
 // ======================
 // ESTADO (carrito)
 // ======================
-// Por ahora el carrito solo guarda {id, qty}
 let cart = [];
 
 // ======================
@@ -21,7 +20,15 @@ const productsDiv = document.querySelector("#products");
 const cartDiv = document.querySelector("#cart");
 const emptyCartP = document.querySelector("#emptyCart");
 const totalSpan = document.querySelector("#total");
+const headerTotalSpan = document.querySelector("#headerTotal"); // NUEVO
 const searchInput = document.querySelector("#searchInput");
+const clearCartBtn = document.querySelector("#clearCartBtn");
+
+// Vistas (2 vistas)
+const catalogView = document.querySelector("#catalogView");
+const cartView = document.querySelector("#cartView");
+const goCatalogBtn = document.querySelector("#goCatalogBtn");
+const goCartBtn = document.querySelector("#goCartBtn");
 
 // ======================
 // Utils
@@ -36,6 +43,38 @@ function formatCOP(n) {
 
 function findProduct(id) {
   return products.find(p => p.id === id);
+}
+
+// ======================
+// Navegación entre vistas
+// ======================
+function showCatalog() {
+  catalogView.classList.remove("hidden");
+  cartView.classList.add("hidden");
+}
+
+function showCart() {
+  cartView.classList.remove("hidden");
+  catalogView.classList.add("hidden");
+}
+
+// ======================
+// Total del carrito (para header y vista carrito)
+// ======================
+function getTotal() {
+  let total = 0;
+
+  cart.forEach(item => {
+    const p = findProduct(item.id);
+    total += p.price * item.qty;
+  });
+
+  return total;
+}
+
+// NUEVO: Actualiza el total del header
+function updateHeaderTotal() {
+  headerTotalSpan.textContent = formatCOP(getTotal());
 }
 
 // ======================
@@ -55,7 +94,6 @@ function renderProducts(list) {
       <button data-id="${p.id}">Agregar</button>
     `;
 
-    // Evento agregar
     div.querySelector("button").addEventListener("click", () => {
       addToCart(p.id);
     });
@@ -65,7 +103,7 @@ function renderProducts(list) {
 }
 
 // ======================
-// Carrito (básico)
+// Carrito (lógica)
 // ======================
 function addToCart(productId) {
   const item = cart.find(i => i.id === productId);
@@ -79,23 +117,35 @@ function addToCart(productId) {
   renderCart();
 }
 
-// Por ahora solo elimina completo (más adelante hago + / -)
 function removeFromCart(productId) {
   cart = cart.filter(i => i.id !== productId);
   renderCart();
 }
 
-function getTotal() {
-  let total = 0;
+function changeQty(productId, delta) {
+  const item = cart.find(i => i.id === productId);
+  if (!item) return;
 
-  cart.forEach(item => {
-    const p = findProduct(item.id);
-    total += p.price * item.qty;
-  });
+  const newQty = item.qty + delta;
 
-  return total;
+  // Si baja a 0, se elimina del carrito
+  if (newQty <= 0) {
+    removeFromCart(productId);
+    return;
+  }
+
+  item.qty = newQty;
+  renderCart();
 }
 
+function clearCart() {
+  cart = [];
+  renderCart();
+}
+
+// ======================
+// Render Carrito
+// ======================
 function renderCart() {
   cartDiv.innerHTML = "";
 
@@ -110,22 +160,38 @@ function renderCart() {
 
     div.innerHTML = `
       <strong>${p.name}</strong>
-      <p>Cantidad: ${item.qty}</p>
+      <p>Cantidad: <span>${item.qty}</span></p>
+
+      <button data-dec="${p.id}">-</button>
+      <button data-inc="${p.id}">+</button>
+
       <button data-remove="${p.id}">Eliminar</button>
     `;
 
-    div.querySelector("button").addEventListener("click", () => {
+    div.querySelector("[data-inc]").addEventListener("click", () => {
+      changeQty(p.id, +1);
+    });
+
+    div.querySelector("[data-dec]").addEventListener("click", () => {
+      changeQty(p.id, -1);
+    });
+
+    div.querySelector("[data-remove]").addEventListener("click", () => {
       removeFromCart(p.id);
     });
 
     cartDiv.appendChild(div);
   });
 
+  // Total de la vista carrito
   totalSpan.textContent = formatCOP(getTotal());
+
+  // NUEVO: Total en el header también
+  updateHeaderTotal();
 }
 
 // ======================
-// Buscar (en proceso)
+// Eventos
 // ======================
 searchInput.addEventListener("input", () => {
   const text = searchInput.value.toLowerCase().trim();
@@ -137,14 +203,15 @@ searchInput.addEventListener("input", () => {
   renderProducts(filtered);
 });
 
+clearCartBtn.addEventListener("click", clearCart);
+
+// Botones de navegación
+goCatalogBtn.addEventListener("click", showCatalog);
+goCartBtn.addEventListener("click", showCart);
+
+// ======================
 // Render inicial
+// ======================
 renderProducts(products);
 renderCart();
-
-/*
-  TODO (pendiente):
-  - Botones + y - para cambiar cantidades
-  - Subtotal por producto
-  - Botón para vaciar carrito
-  - Mejorar estilos / grid de catálogo
-*/
+showCatalog(); // empieza en catálogo
