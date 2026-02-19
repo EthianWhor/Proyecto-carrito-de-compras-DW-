@@ -76,7 +76,7 @@ h1 small {
 }
 
 .product:hover {
-  transform: translateY(-5px);
+  transform: none;
 }
 
 /* IMAGENES AUTOMATICAS */
