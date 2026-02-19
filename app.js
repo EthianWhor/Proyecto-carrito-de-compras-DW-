@@ -2,10 +2,18 @@
 // DATOS (catálogo)
 // ======================
 const products = [
-  { id: 1, name: "Cuaderno Profesional", category: "Cuadernos", price: 12500 },
-  { id: 2, name: "Lapicero Negro", category: "Escritura", price: 2200 },
-  { id: 3, name: "Resaltador Amarillo", category: "Escritura", price: 4500 },
-  { id: 4, name: "Regla 30 cm", category: "Útiles", price: 3000 },
+  { id: 1 , name: "Cuaderno Profesional", category: "Cuadernos", price: 12500 },
+  { id: 2 , name: "Lapicero Negro", category: "Escritura", price: 2200 },
+  { id: 3 , name: "Resaltador Amarillo", category: "Escritura", price: 4500 },
+  { id: 4 , name: "Regla 30 cm", category: "Útiles", price: 3000 },
+  { id: 5 , name: "Borrador", category: "Útiles", price: 1000},
+  { id: 6 , name: "Lapiz", category: "Útiles", price: 1500 },
+  { id: 7 , name: "Marcador Permamente", category: "Útiles", price: 3000},
+  { id: 8 , name: "Tijeras", category: "Útiles", price: 5000},
+  { id: 9 , name: "Pegastick", category: "Útiles", price: 6000},
+  { id: 10 , name: "Carpeta", category: "Cuadernos", price: 7000},
+  { id: 11 , name: "Calculadora", category: "Útiles", price: 149000},
+  { id: 12 , name: "Post-it", category: "Útiles", price: 15000},
 ];
 
 // ======================
